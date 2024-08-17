@@ -63,7 +63,9 @@ pub fn execute(
   use cfg <- result.try(config.load())
 
   let assert Ok(url) =
-    uri.parse(build_url(cfg.key, cfg.id, q, page_number(pageno)))
+    page_number(pageno)
+    |> build_url(cfg.key, cfg.id, q, _)
+    |> uri.parse
 
   let assert Ok(req) = request.from_uri(url)
   case httpc.send(req) {
@@ -75,7 +77,7 @@ pub fn execute(
           // Lazy but haven't found a case yet where failing to decode isn't
           // because there were no results. Would've checked the status code
           // of the response but it appears to be 200 regardless of content
-          |> result.map_error(fn(_) { error.NoResults })
+          |> result.replace_error(error.NoResults)
         _ -> Error(error.Auth)
       }
     }

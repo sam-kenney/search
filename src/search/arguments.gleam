@@ -32,7 +32,7 @@ pub fn describe_error(e: ParseError) -> String {
 
 fn validate_limit(n: String) -> Result(Int, ParseError) {
   case int.parse(n) {
-    Ok(num) if num <= 10 -> Ok(num)
+    Ok(num) if num >= 1 && num <= 10 -> Ok(num)
     Ok(num) -> Error(LimitSize(num))
     _ -> Error(InvalidInt(n))
   }
@@ -40,7 +40,7 @@ fn validate_limit(n: String) -> Result(Int, ParseError) {
 
 fn validate_open(o: String) -> Result(Int, ParseError) {
   case int.parse(o) {
-    Ok(open) if open <= 10 -> Ok(open)
+    Ok(open) if open >= 1 && open <= 10 -> Ok(open)
     Ok(open) -> Error(OpenOutOfBounds(open))
     _ -> Error(InvalidInt(o))
   }

@@ -56,7 +56,7 @@ pub fn load() -> Result(Config, error.SearchError) {
     Ok(data) -> parse_config(data)
     Error(simplifile.Enoent) ->
       Error(error.FileRead(
-        fmt.new("no such file %s. Please run `search config`")
+        fmt.new("no such file %s. Please run `search config <id> <key>`")
         |> fmt.s(file)
         |> fmt.build,
       ))
