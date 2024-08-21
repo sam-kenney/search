@@ -85,25 +85,9 @@ pub fn execute(
 }
 
 pub fn format(results: List(SearchResult)) -> String {
-  do_format(results, [], 0)
+  results
+  |> list.index_map(format_result)
   |> string.join("\n")
-}
-
-fn do_format(
-  results: List(SearchResult),
-  out: List(String),
-  idx: Int,
-) -> List(String) {
-  case results {
-    [result, ..] -> {
-      do_format(
-        list.drop(results, 1),
-        [format_result(result, idx), ..out],
-        idx + 1,
-      )
-    }
-    [] -> list.reverse(out)
-  }
 }
 
 fn format_result(res: SearchResult, idx: Int) -> String {
@@ -130,26 +114,25 @@ fn wrap_text(s: String, max_len: Int) -> List(String) {
 }
 
 fn do_wrap_text(
-  s: List(String),
+  chars: List(String),
   max_len: Int,
   current_len: Int,
   builder: String,
   out: List(String),
 ) -> List(String) {
-  case s, max_len == current_len {
-    [v, ..], False ->
+  case chars, max_len == current_len {
+    [], _ -> out
+    [c, ..rest], True -> {
+      do_wrap_text(rest, max_len, current_len + 1, c, [builder, ..out])
+    }
+    [c, ..rest], False -> {
       do_wrap_text(
-        list.drop(s, 1),
+        rest,
         max_len,
         current_len + 1,
-        string.append(builder, v),
+        string.append(builder, c),
         out,
       )
-    [v, ..], True ->
-      do_wrap_text(list.drop(s, 1), max_len, current_len + 1, v, [
-        builder,
-        ..out
-      ])
-    [], _ -> out
+    }
   }
 }

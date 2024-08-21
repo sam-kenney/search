@@ -38,29 +38,33 @@ pub fn write(id: String, key: String) -> Result(String, error.SearchError) {
     |> fmt.build
 
   case simplifile.write(file, content) {
-    Ok(_) -> Ok("Written config to " <> file)
     Error(simplifile.Enoent) -> {
-      use home <- result.try(get_home())
-      case simplifile.create_directory_all(home <> "/" <> config_dir) {
-        Ok(_) -> write(id, key)
-        Error(e) -> Error(error.FileWrite(simplifile.describe_error(e)))
-      }
+      use _ <- result.try(create_config_dir())
+      write(id, key)
     }
     Error(e) -> Error(error.FileWrite(simplifile.describe_error(e)))
+    Ok(_) -> Ok("Written config to " <> file)
   }
+}
+
+fn create_config_dir() -> Result(Nil, error.SearchError) {
+  use home <- result.try(get_home())
+  simplifile.create_directory_all(home <> "/" <> config_dir)
+  |> result.map_error(fn(e) { error.FileWrite(simplifile.describe_error(e)) })
 }
 
 pub fn load() -> Result(Config, error.SearchError) {
   use file <- result.try(config_file())
   case simplifile.read(file) {
-    Ok(data) -> parse_config(data)
-    Error(simplifile.Enoent) ->
-      Error(error.FileRead(
-        fmt.new("no such file %s. Please run `search config <id> <key>`")
-        |> fmt.s(file)
-        |> fmt.build,
-      ))
+    Error(simplifile.Enoent) -> {
+      fmt.new("no such file %s. Please run `search config <id> <key>`")
+      |> fmt.s(file)
+      |> fmt.build
+      |> error.FileRead
+      |> Error
+    }
     Error(e) -> Error(error.FileRead(simplifile.describe_error(e)))
+    Ok(data) -> parse_config(data)
   }
 }
 
@@ -79,16 +83,15 @@ fn get_map_string_value(
   node: glaml.DocNode,
   name: String,
 ) -> Result(String, error.SearchError) {
-  let glaml_to_search = fn(_) {
+  let err =
     fmt.new("Invalid config file: %s is not present")
     |> fmt.s(name)
     |> fmt.build
     |> error.FileRead
-  }
 
   glaml.get(node, [glaml.Map(name)])
   |> result.map(get_yaml_string_value)
-  |> result.map_error(glaml_to_search)
+  |> result.replace_error(err)
   |> result.flatten
 }
 
