@@ -1,20 +1,6 @@
 # search
 
-[![Package Version](https://img.shields.io/hexpm/v/search)](https://hex.pm/packages/search)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/search/)
-
-```sh
-gleam add search@1
-```
-```gleam
-import search
-
-pub fn main() {
-  // TODO: An example of the project in use
-}
-```
-
-Further documentation can be found at <https://hexdocs.pm/search>.
+Search Google straight from your terminal!
 
 ## Development
 
