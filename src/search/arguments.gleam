@@ -95,7 +95,7 @@ fn parse_search_execute_with_page_and_open(
   let assert SearchExecute(q, p) = args
 
   use open <- result.try(validate_open(o))
-  Ok(SearchExecuteWithOpen(q, p, open))
+  Ok(SearchExecuteWithOpen(q, p, open - 1))
 }
 
 pub fn parse(args: List(String)) -> Result(Arguments, ParseError) {
