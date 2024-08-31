@@ -28,7 +28,6 @@ pub fn main() {
       |> result.unwrap_both
 
     Ok(args.SearchExecuteWithOpen(..)) -> "Not implemented"
-    Error(args.NoArguments) | Error(args.Help) -> args.help
     Error(e) -> args.describe_error(e)
   }
   |> io.println

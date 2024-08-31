@@ -20,7 +20,6 @@ pub type Arguments {
 }
 
 pub type ParseError {
-  NoArguments
   Help
   LimitSize(Int)
   OpenOutOfBounds(Int)
@@ -29,8 +28,7 @@ pub type ParseError {
 
 pub fn describe_error(e: ParseError) -> String {
   case e {
-    NoArguments -> "No arguments provided"
-    Help -> "Search should return the help menu"
+    Help -> help
     LimitSize(limit) ->
       "The value passed to -n must be between 1 and 10, got "
       <> int.to_string(limit)
@@ -120,7 +118,6 @@ pub fn parse(args: List(String)) -> Result(Arguments, ParseError) {
     [q, "-o", o] -> parse_search_execute_with_open(q, 1, o)
     [q, "-p", p, "-o", o] -> parse_search_execute_with_page_and_open(q, p, o)
     [q, "-o", o, "-p", p] -> parse_search_execute_with_page_and_open(q, p, o)
-    [] -> Error(NoArguments)
     _ -> Error(Help)
   }
 }

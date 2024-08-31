@@ -90,7 +90,7 @@ pub fn arguments_parse_search_with_limit_and_page_test() {
 pub fn arguments_parse_no_arguments_test() {
   []
   |> arguments.parse
-  |> should.equal(Error(arguments.NoArguments))
+  |> should.equal(Error(arguments.Help))
 }
 
 pub fn arguments_parse_invalid_input_test() {
