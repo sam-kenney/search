@@ -1,6 +1,17 @@
 import gleam/int
 import gleam/result
 
+pub const help = "
+  Usage:
+    search <query> <OPTIONS>
+    search config <id> <key>
+
+  Options:
+    -n\tInt\tThe number of results to list (max 10 per page)
+    -o\tInt\tOpen the specified result number in your browser
+    -p\tInt\tThe page number to get results from
+  "
+
 pub type Arguments {
   ConfigWrite(id: String, key: String)
   SearchExecute(query: String, page: Int)
