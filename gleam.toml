@@ -25,3 +25,4 @@ gleam_json = ">= 1.0.1 and < 2.0.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.0.0 and < 2.0.0"
+gleescript = ">= 1.4.0 and < 2.0.0"

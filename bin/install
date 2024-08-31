@@ -1,0 +1,8 @@
+#!/bin/sh
+INSTALL_DIR=~/.gleam/bin/
+
+gleam run -m gleescript
+chmod +x ./search
+mkdir -pv $INSTALL_DIR
+mv ./search $INSTALL_DIR
+echo "Done"
