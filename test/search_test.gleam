@@ -22,13 +22,13 @@ pub fn arguments_parse_config_invalid_args_test() {
 pub fn arguments_parse_search_ok_test() {
   ["some query"]
   |> arguments.parse
-  |> should.equal(Ok(arguments.SearchExecute(q: "some query", p: 1)))
+  |> should.equal(Ok(arguments.SearchExecute("some query", page: 1)))
 }
 
 pub fn arguments_parse_search_with_page_test() {
   ["some query", "-p", "3"]
   |> arguments.parse
-  |> should.equal(Ok(arguments.SearchExecute(q: "some query", p: 3)))
+  |> should.equal(Ok(arguments.SearchExecute("some query", page: 3)))
 }
 
 pub fn arguments_parse_search_with_invalid_page_test() {
@@ -41,7 +41,7 @@ pub fn arguments_parse_search_with_limit_test() {
   ["some query", "-n", "3"]
   |> arguments.parse
   |> should.equal(
-    Ok(arguments.SearchExecuteWithLimit("some query", p: 1, n: 3)),
+    Ok(arguments.SearchExecuteWithLimit("some query", page: 1, limit: 3)),
   )
 }
 
@@ -60,7 +60,7 @@ pub fn arguments_parse_search_with_out_of_bounds_limit_test() {
 pub fn arguments_parse_search_with_open_test() {
   ["some query", "-o", "5"]
   |> arguments.parse
-  |> should.equal(Ok(arguments.SearchExecuteWithOpen("some query", p: 1, o: 4)))
+  |> should.equal(Ok(arguments.SearchExecuteWithOpen("some query", page: 1, open: 4)))
 }
 
 pub fn arguments_parse_search_with_out_of_bounds_open_test() {
@@ -72,14 +72,14 @@ pub fn arguments_parse_search_with_out_of_bounds_open_test() {
 pub fn arguments_parse_seach_with_open_and_page_test() {
   ["some query", "-o", "5", "-p", "3"]
   |> arguments.parse
-  |> should.equal(Ok(arguments.SearchExecuteWithOpen("some query", p: 3, o: 4)))
+  |> should.equal(Ok(arguments.SearchExecuteWithOpen("some query", page: 3, open: 4)))
 }
 
 pub fn arguments_parse_search_with_limit_and_page_test() {
   ["some query", "-p", "4", "-n", "1"]
   |> arguments.parse
   |> should.equal(
-    Ok(arguments.SearchExecuteWithLimit("some query", p: 4, n: 1)),
+    Ok(arguments.SearchExecuteWithLimit("some query", page: 4, limit: 1)),
   )
 }
 
