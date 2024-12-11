@@ -13,10 +13,10 @@ pub const help = "
   "
 
 pub type Arguments {
-  ConfigWrite(id: String, key: String)
-  SearchExecute(query: String, page: Int)
-  SearchExecuteWithLimit(query: String, page: Int, limit: Int)
-  SearchExecuteWithOpen(query: String, page: Int, open: Int)
+  WriteConfig(id: String, key: String)
+  Search(query: String, page: Int)
+  SearchWithLimit(query: String, page: Int, limit: Int)
+  SearchWithOpen(query: String, page: Int, open: Int)
 }
 
 pub type ParseError {
@@ -61,7 +61,7 @@ fn parse_search_execute_with_limit(
   limit: String,
 ) -> Result(Arguments, ParseError) {
   use limit <- result.try(validate_limit(limit))
-  Ok(SearchExecuteWithLimit(query, page, limit: limit))
+  Ok(SearchWithLimit(query, page, limit: limit))
 }
 
 fn parse_search_execute_with_open(
@@ -70,7 +70,7 @@ fn parse_search_execute_with_open(
   open: String,
 ) -> Result(Arguments, ParseError) {
   use open <- result.try(validate_open(open))
-  Ok(SearchExecuteWithOpen(query, page: page, open: open - 1))
+  Ok(SearchWithOpen(query, page: page, open: open - 1))
 }
 
 fn parse_search_execute_with_page(
@@ -78,7 +78,7 @@ fn parse_search_execute_with_page(
   page: String,
 ) -> Result(Arguments, ParseError) {
   case int.parse(page) {
-    Ok(page) -> Ok(SearchExecute(query, page))
+    Ok(page) -> Ok(Search(query, page))
     _ -> Error(InvalidInt(page))
   }
 }
@@ -89,10 +89,10 @@ fn parse_search_execute_with_page_and_limit(
   limit: String,
 ) -> Result(Arguments, ParseError) {
   use args <- result.try(parse_search_execute_with_page(query, page))
-  let assert SearchExecute(query, page) = args
+  let assert Search(query, page) = args
 
   use limit <- result.try(validate_limit(limit))
-  Ok(SearchExecuteWithLimit(query, page, limit))
+  Ok(SearchWithLimit(query, page, limit))
 }
 
 fn parse_search_execute_with_page_and_open(
@@ -101,16 +101,16 @@ fn parse_search_execute_with_page_and_open(
   open: String,
 ) -> Result(Arguments, ParseError) {
   use args <- result.try(parse_search_execute_with_page(query, page))
-  let assert SearchExecute(query, page) = args
+  let assert Search(query, page) = args
 
   use open <- result.try(validate_open(open))
-  Ok(SearchExecuteWithOpen(query, page, open - 1))
+  Ok(SearchWithOpen(query, page, open - 1))
 }
 
 pub fn parse(args: List(String)) -> Result(Arguments, ParseError) {
   case args {
-    ["config", id, key] -> Ok(ConfigWrite(id, key))
-    [q] -> Ok(SearchExecute(q, page: 1))
+    ["config", id, key] -> Ok(WriteConfig(id, key))
+    [q] -> Ok(Search(q, page: 1))
     [q, "-p", p] -> parse_search_execute_with_page(q, p)
     [q, "-n", n] -> parse_search_execute_with_limit(q, 1, n)
     [q, "-p", p, "-n", n] -> parse_search_execute_with_page_and_limit(q, p, n)

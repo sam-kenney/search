@@ -53,7 +53,7 @@ fn build_url(key: String, engine_id: String, q: String, start: Int) -> String {
 fn parse_response(body: String) -> Result(List(SearchResult), error.SearchError) {
   json.decode(body, search_items_decoder())
   |> result.map(fn(r) { r.items })
-  |> result.map_error(fn(e) { error.Decode(e) })
+  |> result.map_error(error.Decode)
 }
 
 pub fn execute(
